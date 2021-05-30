@@ -180,7 +180,7 @@ export default {
       params.append("user_uid", this.userUid);
       params.append("nik", this.nik);
       params.append("credit_type", this.creditType);
-      params.append("bank_name", "BCA");
+      params.append("bank_name", "BankB");
       params.append("amount", this.creditAmount);
       console.log("submitting");
       axios
