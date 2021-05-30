@@ -10,7 +10,7 @@
           <h3 class="is-size-6 has-text-weight-medium mb-4">
             Managed by Bank B
           </h3>
-          <a href="http://localhost:4000/auth"
+          <a href="https://api.catena.id/backend/bankb/auth"
             ><button class="button is-link mb-4">Apply using Catena</button></a
           >
         </div>
