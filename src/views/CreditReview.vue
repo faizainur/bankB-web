@@ -39,7 +39,7 @@
                   <p>:</p>
                 </div>
                 <div class="column">
-                  <p>Faiz Ainur Rofiq</p>
+                  <p>{{ name }}</p>
                 </div>
               </div>
               <div class="columns mb-0">
@@ -50,7 +50,7 @@
                   <p>:</p>
                 </div>
                 <div class="column">
-                  <p>Faiz Ainur Rofiq</p>
+                  <p>{{ nik }}</p>
                 </div>
               </div>
               <div class="columns mb-0">
@@ -61,7 +61,7 @@
                   <p>:</p>
                 </div>
                 <div class="column">
-                  <p>Depok</p>
+                  <p>{{ birthplace }}</p>
                 </div>
               </div>
               <div class="columns mb-0">
@@ -72,7 +72,7 @@
                   <p>:</p>
                 </div>
                 <div class="column">
-                  <p>7 Mei 1999</p>
+                  <p>{{ birthday }}</p>
                 </div>
               </div>
               <div class="columns mb-0">
@@ -84,9 +84,7 @@
                 </div>
                 <div class="column">
                   <p>
-                    Puri Depok Mas Blok J No.12, Kelurahan Pancoran Mas,
-                    Kecamatan Pancoran Mas, Kota Depok, Jawa Barat. Indonesia.
-                    16436
+                    {{ address }}
                   </p>
                 </div>
               </div>
@@ -98,7 +96,7 @@
                   <p>:</p>
                 </div>
                 <div class="column">
-                  <p>KUR</p>
+                  <p>{{ creditType }}</p>
                 </div>
               </div>
               <div class="columns mb-0">
@@ -109,7 +107,9 @@
                   <p>:</p>
                 </div>
                 <div class="column">
-                  <p>Rp. <span>50000</span></p>
+                  <p>
+                    Rp. <span>{{ creditAmount }}</span>
+                  </p>
                 </div>
               </div>
               <div class="columns mt-5 pt-5">
@@ -123,7 +123,7 @@
                 </div>
                 <div class="column"></div>
                 <div class="column is-3 has-text-right">
-                  <button class="button is-link">
+                  <button class="button is-link" @click="submit">
                     <p class="">Submit</p>
                   </button>
                 </div>
@@ -138,21 +138,67 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
-    return {};
+    return {
+      userUid: "",
+      name: "",
+      address: "",
+      birthplace: "",
+      birthday: "",
+      nik: "",
+      creditType: "",
+      creditAmount: 0,
+    };
   },
   mounted() {
-    var obj = {
-      key1: "Hello",
-      key2: "World",
-    };
-    localStorage.setItem("obj", JSON.stringify(obj));
-    console.log(JSON.parse(localStorage.getItem("obj")));
+    var profile = JSON.parse(localStorage.getItem("profile"));
+    if (profile) {
+      this.userUid = profile.user_uid;
+      this.name = profile.first_name + " " + profile.last_name;
+      this.nik = profile.nik;
+      this.address = `${profile.address_line_1} ${profile.address_line_2}, ${profile.city}, ${profile.province}, Indonesia. ${profile.postal_code}`;
+
+      var splitted = profile.ttl.split(", ");
+      this.birthplace = splitted[0];
+      this.birthday = splitted[1];
+
+      this.creditType = localStorage.getItem("creditType");
+      this.creditAmount = localStorage.getItem("creditAmount");
+    } else {
+      this.$router.push("/");
+    }
   },
   methods: {
     backOnClick() {
       this.$router.push("/credit/application");
+    },
+    submit() {
+      const params = new URLSearchParams();
+      params.append("user_uid", this.userUid);
+      params.append("nik", this.nik);
+      params.append("credit_type", this.creditType);
+      params.append("bank_name", "BCA");
+      params.append("amount", this.creditAmount);
+      console.log("submitting");
+      axios
+        .post("https://api.catena.id/v1/fabric/credit/create", params, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+          localStorage.clear();
+          this.$router.push("/credit/success");
+        })
+        .catch((error) => {
+          console.log(error);
+          localStorage.clear();
+          this.$router.push("/credit/failed");
+        });
     },
   },
 };

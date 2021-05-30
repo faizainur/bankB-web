@@ -33,6 +33,7 @@
                 name="name"
                 id=""
                 class="input mt-2 mb-4"
+                v-model="name"
                 readonly
               />
               <label for="">NIK</label>
@@ -41,6 +42,7 @@
                 name="name"
                 id=""
                 class="input mb-4 mt-2"
+                v-model="nik"
                 readonly
               />
               <label for="">Birthplace</label>
@@ -48,6 +50,7 @@
                 type="text"
                 name="name"
                 id=""
+                v-model="birthplace"
                 class="input mb-4 mt-2"
                 readonly
               />
@@ -56,6 +59,7 @@
                 type="text"
                 name="name"
                 id=""
+                v-model="birthday"
                 class="input mb-4 mt-2"
                 readonly
               />
@@ -66,10 +70,19 @@
                 cols="10"
                 rows="10"
                 class="textarea mb-3 mt-2"
+                v-model="address"
                 readonly
               ></textarea>
 
               <div class="columns mt-5">
+                <div class="column is-3 has-text-right">
+                  <button
+                    class="button px-4 is-fullwidth"
+                    @click="cancelOnClick"
+                  >
+                    Cancel
+                  </button>
+                </div>
                 <div class="column"></div>
                 <div class="column is-3 has-text-right">
                   <button
@@ -92,19 +105,35 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      name: "",
+      address: "",
+      birthplace: "",
+      birthday: "",
+      nik: "",
+    };
   },
   mounted() {
-    var obj = {
-      key1: "Hello",
-      key2: "World",
-    };
-    localStorage.setItem("obj", JSON.stringify(obj));
-    console.log(JSON.parse(localStorage.getItem("obj")));
+    var profile = JSON.parse(localStorage.getItem("profile"));
+    if (profile) {
+      this.name = profile.first_name + " " + profile.last_name;
+      this.nik = profile.nik;
+      this.address = `${profile.address_line_1} ${profile.address_line_2}, ${profile.city}, ${profile.province}, Indonesia. ${profile.postal_code}`;
+
+      var splitted = profile.ttl.split(", ");
+      this.birthplace = splitted[0];
+      this.birthday = splitted[1];
+    } else {
+      this.$router.push("/");
+    }
   },
   methods: {
     nextOnClick() {
       this.$router.push("/credit/application");
+    },
+    cancelOnClick() {
+      localStorage.clear();
+      this.$router.push("/");
     },
   },
 };

@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import AuthCallback from "../views/AuthCallback";
-import CreditProfile from "../views/CreditProfile";
+import CreditSuccess from "../views/CreditSuccess";
+import CreditFailed from "../views/CreditFailed";
 
 const routes = [
   {
@@ -40,6 +41,16 @@ const routes = [
     path: "/auth/callback",
     name: "Login",
     component: AuthCallback,
+  },
+  {
+    path: "/credit/success",
+    name: "CreditSuccess",
+    component: CreditSuccess,
+  },
+  {
+    path: "/credit/failed",
+    name: "CreditFailed",
+    component: CreditFailed,
   },
 ];
 

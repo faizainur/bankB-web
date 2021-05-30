@@ -29,14 +29,22 @@
             <div class="box-custom py-5 px-6 mx-3">
               <label for="" class="">Credit Type</label>
               <!-- <input type="text" name="name" id="" class="input mt-2 mb-4" /> -->
-              <div class="select dblock is-fullwidth">
-                <select name="" id="">
-                  <option value="">KUR Mikro</option>
-                  <option value="">KUR Makro</option>
+              <div class="select dblock is-fullwidth mt-2 mb-3">
+                <select name="" id="" v-model="selectedType">
+                  <option value="KUR Mikro">KUR Mikro</option>
+                  <option value="KUR Kecil">KUR Kecil</option>
+                  <option value="KUR Penempatan TKI">KUR Penempatan TKI</option>
+                  <option value="KUR Khusus">KUR Khusus</option>
                 </select>
               </div>
               <label for="">Amount</label>
-              <input type="number" name="name" id="" class="input mb-4 mt-2" />
+              <input
+                type="number"
+                name="name"
+                id=""
+                class="input mb-4 mt-2"
+                v-model="amount"
+              />
 
               <div class="columns mt-5">
                 <div class="column is-3 has-text-right">
@@ -69,21 +77,27 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      selectedType: "",
+      amount: 0,
+    };
   },
   mounted() {
-    var obj = {
-      key1: "Hello",
-      key2: "World",
-    };
-    localStorage.setItem("obj", JSON.stringify(obj));
-    console.log(JSON.parse(localStorage.getItem("obj")));
+    var profile = JSON.parse(localStorage.getItem("profile"));
+    if (profile) {
+      this.selectedType = localStorage.getItem("creditType");
+      this.amount = localStorage.getItem("creditAmount");
+    } else {
+      this.$router.push("/");
+    }
   },
   methods: {
     backOnClick() {
       this.$router.push("/credit/profile");
     },
     nextOnClick() {
+      localStorage.setItem("creditType", this.selectedType);
+      localStorage.setItem("creditAmount", this.amount);
       this.$router.push("/credit/review");
     },
   },
