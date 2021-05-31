@@ -151,12 +151,14 @@ export default {
       nik: "",
       creditType: "",
       creditAmount: 0,
+      email: "",
     };
   },
   mounted() {
     var profile = JSON.parse(localStorage.getItem("profile"));
     if (profile) {
       this.userUid = profile.user_uid;
+      this.email = profile.email;
       this.name = profile.first_name + " " + profile.last_name;
       this.nik = profile.nik;
       this.address = `${profile.address_line_1} ${profile.address_line_2}, ${profile.city}, ${profile.province}, Indonesia. ${profile.postal_code}`;
@@ -178,6 +180,7 @@ export default {
     submit() {
       const params = new URLSearchParams();
       params.append("user_uid", this.userUid);
+      params.append("email", this.email);
       params.append("nik", this.nik);
       params.append("credit_type", this.creditType);
       params.append("bank_name", "BankB");
